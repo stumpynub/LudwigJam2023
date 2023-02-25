@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cca0ue76ednpv"]
+
+[ext_resource type="Script" path="res://scripts/yarn.gd" id="1_kat1b"]
+[ext_resource type="Texture2D" uid="uid://dxkiyta3ymqpa" path="res://assets/sprites/ball.png" id="2_7qt7u"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cv4ev"]
+friction = 0.0
+bounce = 0.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fd8cv"]
+radius = 65.0692
+
+[node name="Yarn" type="RigidBody2D" groups=["yarn"]]
+position = Vector2(244, 386)
+mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_cv4ev")
+gravity_scale = 0.5
+continuous_cd = 2
+script = ExtResource("1_kat1b")
+
+[node name="YarnSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.556, 0.556)
+texture = ExtResource("2_7qt7u")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.556, 0.556)
+shape = SubResource("CircleShape2D_fd8cv")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+scale = Vector2(0.556, 0.556)
+explosiveness = 1.0

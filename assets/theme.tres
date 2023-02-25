@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[ext_resource type="FontFile" uid="uid://4rxc74rn8yw0" path="res://assets/fonts/The Most Beautiful Gift One Font by 7NTypes.otf" id="1_51blx"]
+
+[resource]
+default_font = ExtResource("1_51blx")
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 36
+Label/fonts/font = ExtResource("1_51blx")
