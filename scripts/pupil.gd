@@ -10,6 +10,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	global_position = lerp(global_position, game.lowest_yarn.global_position, delta)
-	global_position.x = clamp(global_position.x, start_pos.x - 10, start_pos.x + 10)
-	global_position.y = clamp(global_position.y, start_pos.y - 10, start_pos.y + 10)
+	if !game.end: 
+		global_position.x = clamp(global_position.x, start_pos.x - 10, start_pos.x + 10)
+		global_position = lerp(global_position, game.lowest_yarn.global_position, delta)
+		global_position.y = clamp(global_position.y, start_pos.y - 10, start_pos.y + 10)

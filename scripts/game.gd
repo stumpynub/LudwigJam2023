@@ -9,7 +9,7 @@ var yarn_list = []
 @onready var right_paw = $RightPaw
 @onready var start_left = left_paw.global_position
 @onready var start_right = right_paw.global_position
-
+@onready var hit_player = $HitPlayer
 @onready var left_foot = $LeftFoot
 @onready var right_foot = $RightFoot
 
@@ -20,7 +20,7 @@ var yarn_list = []
 var lowest_yarn = null 
 var left_kicked = false 
 var right_kicked = false 
-
+var end = false 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for node in get_tree().get_nodes_in_group("yarn"): 
@@ -44,7 +44,10 @@ func _process(delta):
 				lowest_yarn = yarn
 			
 	if lowest_yarn.global_position.y >= get_viewport_rect().size.y: 
-		get_tree().reload_current_scene()
+		if !end:
+			$AnimationPlayer.play("end")
+			$Meow.play()
+			end = true
 	# paw hitting
 	if Input.is_action_just_pressed("click"): 
 		if get_global_mouse_position().x < get_viewport_rect().size.x / 2: 
@@ -71,31 +74,34 @@ func _process(delta):
 	left_foot.global_position.x = clamp(left_foot.global_position.x, 0, get_viewport_rect().size.x)
 	right_foot.global_position.x = clamp(right_foot.global_position.x, 0, get_viewport_rect().size.x)
 	
-	if is_ball_left(): 
-		left_foot.global_position.x = lerp(left_foot.global_position.x, lowest_yarn.global_position.x, delta * 2)
-		
-		var d = left_foot.global_position.distance_to(lowest_yarn.global_position)
-		
-		if d < 50 and !left_kicked: 
-			left_kicked = true 
-			left_foot.global_position.y -= 15
-			lowest_yarn.linear_velocity.y = 5
-			points += 1
-			lowest_yarn.apply_central_impulse((Vector2.UP * 100) + (Vector2.RIGHT * randf_range(-100, 100)))
-		elif d > 50: 
-			left_kicked = false 
-	else: 
-		right_foot.global_position.x = lerp(right_foot.global_position.x, lowest_yarn.global_position.x, delta * 2)
-		
-		var d = right_foot.global_position.distance_to(lowest_yarn.global_position)
-		if d < 50 and !right_kicked:
-			right_kicked = true  
-			points += 1
-			right_foot.global_position.y -= 15
-			lowest_yarn.linear_velocity.y = 5
-			lowest_yarn.apply_central_impulse((Vector2.UP * 100) + (Vector2.RIGHT * randf_range(-100, 100)))
-		elif d > 50: 
-			right_kicked = false
+	if !end:
+		if is_ball_left(): 
+			left_foot.global_position.x = lerp(left_foot.global_position.x, lowest_yarn.global_position.x, delta * 3)
+			
+			var d = left_foot.global_position.distance_to(lowest_yarn.global_position)
+			
+			if d < 50 and !left_kicked: 
+				left_kicked = true 
+				left_foot.global_position.y -= 15
+				lowest_yarn.linear_velocity.y = 5
+				points += 1
+				lowest_yarn.apply_central_impulse((Vector2.UP * 100) + (Vector2.RIGHT * randf_range(-100, 100)))
+				hit_player.play()
+			elif d > 50: 
+				left_kicked = false 
+		else: 
+			right_foot.global_position.x = lerp(right_foot.global_position.x, lowest_yarn.global_position.x, delta * 3)
+			
+			var d = right_foot.global_position.distance_to(lowest_yarn.global_position)
+			if d < 50 and !right_kicked:
+				right_kicked = true  
+				points += 1
+				right_foot.global_position.y -= 15
+				lowest_yarn.linear_velocity.y = 5
+				lowest_yarn.apply_central_impulse((Vector2.UP * 100) + (Vector2.RIGHT * randf_range(-100, 100)))
+				hit_player.play()
+			elif d > 50: 
+				right_kicked = false
 
 
 
@@ -116,9 +122,11 @@ func hit_check():
 			
 		if left_dist < 100: 
 			apply_force(left_paw, yarn)
+			hit_player.play()
 			points += 1
 		if right_dist < 100: 
 			apply_force(right_paw, yarn)
+			hit_player.play()
 			points += 1 
 		
 
@@ -145,3 +153,7 @@ func is_ball_left() -> bool:
 		return false
 
 
+
+
+func _on_texture_button_pressed():
+	get_tree().reload_current_scene()
